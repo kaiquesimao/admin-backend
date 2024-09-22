@@ -1,22 +1,24 @@
 package com.kaique.admin_store.controllers;
 
 import com.kaique.admin_store.dtos.UserDto;
-import com.kaique.admin_store.services.UserService;
+import com.kaique.admin_store.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/users")
+import java.util.List;
+
+@RestController
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
+    private final UserRepository UserRepository;
 
-    @PostMapping("/sign-up")
-    public ResponseEntity<UserDto> signUp(@RequestBody UserDto userDto) {
-        var user = userService.signUp(userDto);
+    @GetMapping
+    public ResponseEntity<List<UserDto>> findAll() {
 
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body(UserRepository.findAll().stream().map(UserDto::fromEntity).toList());
     }
 }

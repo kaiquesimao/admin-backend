@@ -1,11 +1,11 @@
 package com.kaique.admin_store.models;
 
-import com.kaique.admin_store.dtos.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "user")
@@ -17,9 +17,9 @@ import java.util.Objects;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true, updatable = false, insertable = false, columnDefinition = "BIGINT")
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", nullable = false, unique = true, updatable = false, insertable = false)
+    private UUID id;
 
     @Column(name = "name", nullable = false, length = 100, columnDefinition = "varchar(100)")
     private String name;
@@ -30,7 +30,7 @@ public class User {
     @Column(name = "email", nullable = false, unique = true, length = 100, columnDefinition = "varchar(100)")
     private String email;
 
-    @Column(name = "password", nullable = false, length = 50, columnDefinition = "varchar(50)")
+    @Column(name = "password", nullable = false, columnDefinition = "varchar(255)")
     private String password;
 
     @Column(name = "status", columnDefinition = "varchar")

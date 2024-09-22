@@ -24,11 +24,11 @@ public class CustomExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ResponseBody
     public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException e) {
         log.error("Access denied", e);
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: You does not have permission to perform this action.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Access denied: " + e.getMessage());
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
