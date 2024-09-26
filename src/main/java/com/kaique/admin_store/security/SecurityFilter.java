@@ -7,13 +7,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
@@ -28,10 +28,9 @@ public class SecurityFilter extends OncePerRequestFilter {
         var login = tokenService.validateToken(token);
 
         if (login != null) {
-            var user = userRepository.findFirstByEmail(login).orElseThrow(() -> new RuntimeException("User not found"));
-//            var authorities = user.getRole();
-            var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")); //todo change to user.getRole()
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
+            UserDetails user = userRepository.findFirstByEmail(login).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            var authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities());
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
